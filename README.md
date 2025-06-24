@@ -17,3 +17,5 @@ ruff check --fix
 ```shell
 pre-commit install
 ```
+
+![lint](https://github.com/VladislavIb/lifetracker/actions/workflows/style_check.yml/badge.svg)
