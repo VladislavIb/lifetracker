@@ -1,17 +1,11 @@
-import os
 from pathlib import Path
 from typing import Optional
 
-from pydantic_settings import BaseSettings
 from dotenv import load_dotenv
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
-
-BASE_DIR_OUT = Path(__file__).resolve().parent.parent
-BASE_DIR_PROJECT = BASE_DIR_OUT.parent
-ENV_FILE_PATH = BASE_DIR_OUT / 'infra' / '.env'
-
-if os.getenv('DEBUG', 'False') == 'True':
-    load_dotenv(ENV_FILE_PATH)
+BASE_DIR = Path(__file__).resolve().parent.parent
+load_dotenv(BASE_DIR / 'infra' / '.env')
 
 
 class Settings(BaseSettings):
@@ -27,6 +21,8 @@ class Settings(BaseSettings):
     POSTGRES_DB: Optional[str] = 'lifetracker'
     DB_ECHO: Optional[bool] = False
 
+    model_config = SettingsConfigDict(env_file=BASE_DIR / 'infra' / '.env')
+
     @property
     def database_url(self) -> str:
         """Формирует URL для подключения к БД."""
@@ -36,8 +32,5 @@ class Settings(BaseSettings):
             f'{self.DB_HOST}:{self.DB_PORT}/{self.POSTGRES_DB}'
         )
 
-    class Config:
-        """Конфигурация класса."""
 
-        env_file = ENV_FILE_PATH
-        extra = 'ignore'
+settings = Settings()
